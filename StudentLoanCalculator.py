@@ -5,8 +5,7 @@ def studentLoans(loans, interestRates, amountPaid):
     while loans[1] > 0:
         month += 1
         totalInterest = calculateInterest(loans, interestRates)
-        highestLoan = findFirstHighestRate(loans, interestRates)
-
+        highestLoan = findHighestInterestRateWithOutstandingPrinciple(loans, interestRates)
         payLoan(loans, interestRates, highestLoan, amountPaid, totalInterest)
         printLoanInfo(loans, amountPaid, totalInterest, month, numOfLoans)
 
@@ -27,7 +26,7 @@ def calculateInterest(loans, interestRates):
     return totalInterest
 
 
-def findFirstHighestRate(loans, interestRates):
+def findHighestInterestRateWithOutstandingPrinciple(loans, interestRates):
     keys = list(interestRates.keys())
     highestRateLoanKey = len(interestRates.keys())
     for key in keys:
@@ -37,10 +36,18 @@ def findFirstHighestRate(loans, interestRates):
 
 
 def payLoan(loans, interestRates, highestLoan, amountPaid, totalInterest):
-    loans[highestLoan] -= amountPaid - totalInterest
 
+    # # Paying Interest of all the leftover loans
+    # for key in list(loans.keys()):
+    #     loans[key] -= ((interestRates[key] / 12) * loans[key])
+
+    # Paying Principle
+    loans[highestLoan] -= (amountPaid - totalInterest)
+
+    # If the "HighestLoan" amount goes negative, rollover the payment to the next largest loan
     if highestLoan != 1 and loans[highestLoan] <= 0:
-        loans[highestLoan - 1] += loans[highestLoan]
+        nextHighest = findHighestInterestRateWithOutstandingPrinciple(loans, interestRates)
+        loans[nextHighest] += loans[highestLoan]
         print(
               f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
               f"LOAN {highestLoan} PAID OFF! :D\n"
@@ -84,6 +91,10 @@ if __name__ == '__main__':
             6: 10000
         }
 
+    myForgivenLoans = \
+        {
+        }
+
     myInterestRates = \
         {
             1: 0.0275,
@@ -94,4 +105,6 @@ if __name__ == '__main__':
             6: 0.0499
         }
 
-    studentLoans(myLoans, myInterestRates, 750)
+    studentLoans(myNormalLoans, myInterestRates, 750)
+
+    # studentLoans(myForgivenLoans, myInterestRates, 750)
