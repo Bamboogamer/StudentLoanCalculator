@@ -16,9 +16,11 @@ def studentLoans(loans, interestRates, amountPaid):
         totalInterest = calculateInterest(loans, interestRates)
         highestLoan = findHighestInterestRateWithOutstandingPrinciple(loans, interestRates)
 
-        if (totalInterest > amountPaid):
+        # Pay amount must be higher than interest
+        if totalInterest > amountPaid:
             print(f"Amount {amountPaid} Paid Per Month will not cover interest")
             return -1
+
         payLoan(loans, interestRates, highestLoan, amountPaid, totalInterest)
         printLoanInfo(loans, amountPaid, totalInterest, month, numOfLoans)
 
@@ -94,9 +96,8 @@ def printLoanInfo(loans, amountPaid, totalInterest, month, totalNumOfLoans):
     print(f"END OF MONTH {month}\n")
 
 
-def minimumPaymentPerMonth(loans, interestRates, goalYears):
+def minimumPaymentPerMonthBruteForce(loans, interestRates, goalYears):
     goalMonths = goalYears * 12
-
     # Starting at a bare minimum of 100 dollars
     amount = 100
     while True:
@@ -106,7 +107,7 @@ def minimumPaymentPerMonth(loans, interestRates, goalYears):
         if goalMonths >= testMonths > 0:
             break
 
-    print(f"TESTING DANNY: MINIUM AMOUNT REQUIRED --> {amount}")
+    print(f"MINIUM AMOUNT PAY PER MONTH REQUIRED TO PAY OFF ALL LOANS WITHIN {goalYears} years --> ${amount:.2f}")
     return amount
 
 
@@ -140,4 +141,5 @@ if __name__ == '__main__':
     # studentLoans(myNormalLoans, myInterestRates, 750)
     #
     # # studentLoans(myForgivenLoans, myInterestRates, 750)
-    minimumPaymentPerMonth(myNormalLoans, myInterestRates, 2)
+    minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2)  # 1657
+    # minimumPaymentPerMonthOptimize1(myNormalLoans, myInterestRates, 2)
