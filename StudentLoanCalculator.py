@@ -7,21 +7,19 @@ def studentLoans(loans, interestRates, amountPaid):
 
     while loans[1] > 0:
         month += 1
+        totalInterest = calculateInterest(loans, interestRates)
 
         # If payment amount will not be complete within 20 years
         if month > (16*12):
             print("LOAN CANNOT BE PAID OFF WITHIN 16 YEARS, RECONSIDER HOW MUCH YOU CAN PAY PER MONTH")
             return -1
 
-        totalInterest = calculateInterest(loans, interestRates)
-        highestLoan = findHighestInterestRateWithOutstandingPrinciple(loans, interestRates)
-
         # Pay amount must be higher than interest
         if totalInterest > amountPaid:
             print(f"Amount {amountPaid} Paid Per Month will not cover interest")
             return -1
 
-        payLoan(loans, interestRates, highestLoan, amountPaid, totalInterest)
+        payLoan(loans, amountPaid, totalInterest)
         printLoanInfo(loans, amountPaid, totalInterest, month, numOfLoans)
 
     print(
@@ -37,7 +35,7 @@ def calculateInterest(loans, interestRates):
     totalInterest = 0
     for key in list(loans.keys()):
         interest_cost = (interestRates[key] / 12) * loans[key]
-        loans[key] += interest_cost
+        # Assumed interest is added
         totalInterest += interest_cost
     return totalInterest
 
@@ -51,29 +49,22 @@ def findHighestInterestRateWithOutstandingPrinciple(loans, interestRates):
     return highestRateLoanKey
 
 
-def payLoan(loans, interestRates, highestLoan, amountPaid, totalInterest):
-
-    # # Paying Interest of all the leftover loans
-    # for key in list(loans.keys()):
-    #     loans[key] -= ((interestRates[key] / 12) * loans[key])
-
-    # Paying Principle
-    loans[highestLoan] -= (amountPaid - totalInterest)
-
-    # If the "HighestLoan" amount goes negative, rollover the payment to the next largest loan
-    if highestLoan != 1 and loans[highestLoan] <= 0:
-        nextHighest = findHighestInterestRateWithOutstandingPrinciple(loans, interestRates)
-        loans[nextHighest] += loans[highestLoan]
-        print(
-              f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
-              f"LOAN {highestLoan} PAID OFF! :D\n"
-              f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n")
-        del loans[highestLoan]
-        del interestRates[highestLoan]
+def payLoan(loans, amountPaid, totalInterest):
+    # Assuming Interest is already paid for
+    # Paying Principle and Rollover the over-pay to next biggest loan
+    principlePay = amountPaid - totalInterest
+    for i in range(len(loans), 0, -1):
+        loans[i] -= principlePay
+        if loans[i] < 0:
+            principlePay = abs(loans[i])
+            loans[i] = 0
+        else:
+            principlePay = 0
+        if principlePay == 0:
+            break
 
 
 def printLoanInfo(loans, amountPaid, totalInterest, month, totalNumOfLoans):
-
     print(f"MONTH {month}\n"
           f"Total Amount Paid this Month: ${amountPaid:.2f}\n"
           f"Principle Paid this Month: ${amountPaid - totalInterest:.2f}\n"
@@ -84,24 +75,20 @@ def printLoanInfo(loans, amountPaid, totalInterest, month, totalNumOfLoans):
           "===============================")
 
     for loanNumber in range(1, totalNumOfLoans+1):
-
-        try:
-            if loans[1] <= 0:
-                print(f"Loan {loanNumber} Balance: [PAID OFF]")
-            else:
-                print(f"Loan {loanNumber} Balance: ${loans[loanNumber]:.2f}")
-        except KeyError:
+        if loans[loanNumber] <= 0:
             print(f"Loan {loanNumber} Balance: [PAID OFF]")
+        else:
+            print(f"Loan {loanNumber} Balance: ${loans[loanNumber]:.2f}")
 
     print(f"END OF MONTH {month}\n")
 
 
-def minimumPaymentPerMonthBruteForce(loans, interestRates, goalYears):
+def minimumPaymentPerMonthBruteForce(loans, interestRates, goalYears, accuracy=1.0, startingGuess=100):
     goalMonths = goalYears * 12
     # Starting at a bare minimum of 100 dollars
-    amount = 100
+    amount = startingGuess
     while True:
-        amount += 1
+        amount += accuracy
         testMonths = studentLoans(copy.deepcopy(loans), copy.deepcopy(interestRates), amount)
 
         if goalMonths >= testMonths > 0:
@@ -111,9 +98,17 @@ def minimumPaymentPerMonthBruteForce(loans, interestRates, goalYears):
     return amount
 
 
-
-
 if __name__ == '__main__':
+
+    testLoans = \
+        {
+            1: 30000
+        }
+    testInterestRates = \
+        {
+            1: 0.05
+        }
+
     myNormalLoans = \
         {
             1: 10000,
@@ -138,8 +133,22 @@ if __name__ == '__main__':
             6: 0.0499
         }
 
-    # studentLoans(myNormalLoans, myInterestRates, 750)
-    #
-    # # studentLoans(myForgivenLoans, myInterestRates, 750)
-    minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2)  # 1657
-    # minimumPaymentPerMonthOptimize1(myNormalLoans, myInterestRates, 2)
+    # print(calculate_minimum_payment(myNormalLoans, myInterestRates, 10))
+    from time import time
+    times = []
+    t0 = time()
+    minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=1, startingGuess=1400)
+    t1 = time()
+    minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=0.1, startingGuess=1400)
+    t2 = time()
+    minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=0.01, startingGuess=1400)
+    t3 = time()
+    print('mPPMBF $1.00 Accuracy starting at $1400 takes %f' % (t1 - t0))
+    print('mPPMBF $0.10 Accuracy starting at $1400 takes %f' % (t2 - t1))
+    print('mPPMBF $0.01 Accuracy starting at $1400 takes %f' % (t3 - t2))
+
+    # minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=0.1, startingGuess=0)
+    # minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, 10)
+    # studentLoans(myNormalLoans, myInterestRates, 300000)
+
+    # studentLoans(testLoans, testInterestRates, 318.20)
