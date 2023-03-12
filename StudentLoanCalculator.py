@@ -149,9 +149,9 @@ if __name__ == '__main__':
     t2 = time()
     minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=0.01, startingGuess=1400)
     t3 = time()
-    print('mPPMBF $1.00 Accuracy starting at $1400 takes %f' % (t1 - t0))
-    print('mPPMBF $0.10 Accuracy starting at $1400 takes %f' % (t2 - t1))
-    print('mPPMBF $0.01 Accuracy starting at $1400 takes %f' % (t3 - t2))
+    print(f'mPPMBF $1.00 Accuracy starting at $1400 takes {t1 - t0:.2f} seconds')
+    print(f'mPPMBF $0.10 Accuracy starting at $1400 takes {t2 - t1:.2f} seconds')
+    print(f'mPPMBF $0.01 Accuracy starting at $1400 takes {t3 - t2:.2f} seconds')
 
     # minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=0.1, startingGuess=0)
     # minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, 10)
