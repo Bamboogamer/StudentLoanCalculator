@@ -10,13 +10,14 @@ def studentLoans(loans, interestRates, amountPaid):
         totalInterest = calculateInterest(loans, interestRates)
 
         # If payment amount will not be complete within 20 years
-        if month > (16*12):
-            print("LOAN CANNOT BE PAID OFF WITHIN 16 YEARS, RECONSIDER HOW MUCH YOU CAN PAY PER MONTH")
+        if month > (20*12):
+            print(f"Loan cannot be paid of within 20 years with a Monthly payment of {amountPaid}, "
+                  "RECONSIDER HOW MUCH YOU CAN PAY PER MONTH OR CONSIDER A DIFFERENT PAYMENT PLAN")
             return -1
 
         # Pay amount must be higher than interest
         if totalInterest > amountPaid:
-            print(f"Amount {amountPaid} Paid Per Month will not cover interest")
+            print(f"Amount ({amountPaid}) paid per month will NOT cover interest")
             return -1
 
         payLoan(loans, amountPaid, totalInterest)
@@ -41,9 +42,8 @@ def calculateInterest(loans, interestRates):
 
 
 def findHighestInterestRateWithOutstandingPrinciple(loans, interestRates):
-    keys = list(interestRates.keys())
     highestRateLoanKey = len(interestRates.keys())
-    for key in keys:
+    for key in list(interestRates.keys()):
         if interestRates[key] >= highestRateLoanKey and loans[key] > 0:
             highestRateLoanKey = key
     return highestRateLoanKey
@@ -65,27 +65,25 @@ def payLoan(loans, amountPaid, totalInterest):
 
 
 def printLoanInfo(loans, amountPaid, totalInterest, month, totalNumOfLoans):
-    print(f"MONTH {month}\n"
-          f"Total Amount Paid this Month: ${amountPaid:.2f}\n"
-          f"Principle Paid this Month: ${amountPaid - totalInterest:.2f}\n"
-          f"Total Interest Paid this Month: ${totalInterest:.2f}"
-          )
-
-    print("Current Loans:\n"
-          "===============================")
+    end_string = f"MONTH {month}\n" \
+                 f"Total Amount Paid this Month: ${amountPaid:.2f}\n" \
+                 f"Principle Paid this Month: ${amountPaid - totalInterest:.2f}\n" \
+                 f"Total Interest Paid this Month: ${totalInterest:.2f}\n" \
+                 f"Current Loans:\n" \
+                 f"===============================\n"
 
     for loanNumber in range(1, totalNumOfLoans+1):
         if loans[loanNumber] <= 0:
-            print(f"Loan {loanNumber} Balance: [PAID OFF]")
+            end_string += f"Loan {loanNumber} Balance: [PAID OFF]"
         else:
-            print(f"Loan {loanNumber} Balance: ${loans[loanNumber]:.2f}")
+            end_string += f"Loan {loanNumber} Balance: ${loans[loanNumber]:.2f}"
 
-    print(f"END OF MONTH {month}\n")
+    print(end_string + f"\nEND OF MONTH {month}\n")
+    return -1
 
 
-def minimumPaymentPerMonthBruteForce(loans, interestRates, goalYears, accuracy=1.0, startingGuess=100):
+def minimumPaymentPerMonthBruteForce(loans, interestRates, goalYears, accuracy=1.0, startingGuess=150):
     goalMonths = goalYears * 12
-    # Starting at a bare minimum of 100 dollars
     amount = startingGuess
     while True:
         amount += accuracy
@@ -139,22 +137,20 @@ if __name__ == '__main__':
             6: 0.0499
         }
 
-    # print(calculate_minimum_payment(myNormalLoans, myInterestRates, 10))
-    from time import time
-    times = []
-    t0 = time()
-    minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=1, startingGuess=1400)
-    t1 = time()
-    minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=0.1, startingGuess=1400)
-    t2 = time()
-    minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=0.01, startingGuess=1400)
-    t3 = time()
-    print(f'mPPMBF $1.00 Accuracy starting at $1400 takes {t1 - t0:.2f} seconds')
-    print(f'mPPMBF $0.10 Accuracy starting at $1400 takes {t2 - t1:.2f} seconds')
-    print(f'mPPMBF $0.01 Accuracy starting at $1400 takes {t3 - t2:.2f} seconds')
-
-    # minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, 2, accuracy=0.1, startingGuess=0)
-    # minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, 10)
     # studentLoans(myNormalLoans, myInterestRates, 300000)
-
     # studentLoans(testLoans, testInterestRates, 318.20)
+
+    from time import time
+    guess = 150
+    years = 10
+    t0 = time()
+    a = minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, years, accuracy=1, startingGuess=guess)
+    t1 = time()
+    b = minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, years, accuracy=0.1, startingGuess=guess)
+    t2 = time()
+    c = minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, years, accuracy=0.01, startingGuess=guess)
+    t3 = time()
+    print(f'mPPMBF $1.00 Accuracy starting at ${guess:.2f} takes {t1 - t0:.2f} seconds, Result -> ${a:.2f}')
+    print(f'mPPMBF $0.10 Accuracy starting at ${guess:.2f} takes {t2 - t1:.2f} seconds, Result -> ${b:.2f}')
+    print(f'mPPMBF $0.01 Accuracy starting at ${guess:.2f} takes {t3 - t2:.2f} seconds, Result -> ${c:.2f}')
+
