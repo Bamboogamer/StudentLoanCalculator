@@ -121,6 +121,12 @@ if __name__ == '__main__':
 
     myForgivenLoans = \
         {
+            1: 10000,  # $20000 of STUDENT LOANS FORGIVEN
+            2: 10000,
+            3: 10000,
+            4: 10000,
+            5: 10000 - 10000,
+            6: 10000 - 10000
         }
 
     myInterestRates = \
