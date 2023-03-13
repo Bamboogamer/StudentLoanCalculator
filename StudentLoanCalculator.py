@@ -11,24 +11,24 @@ def studentLoans(loans, interestRates, amountPaid):
 
         # If payment amount will not be complete within 20 years
         if month > (20*12):
-            print(f"Loan cannot be paid of within 20 years with a Monthly payment of {amountPaid}, "
-                  "RECONSIDER HOW MUCH YOU CAN PAY PER MONTH OR CONSIDER A DIFFERENT PAYMENT PLAN")
+            # print(f"Loan cannot be paid of within 20 years with a Monthly payment of {amountPaid}, "
+            #       "RECONSIDER HOW MUCH YOU CAN PAY PER MONTH OR CONSIDER A DIFFERENT PAYMENT PLAN")
             return -1
 
         # Pay amount must be higher than interest
         if totalInterest > amountPaid:
-            print(f"Amount ({amountPaid}) paid per month will NOT cover interest")
+            # print(f"Amount ({amountPaid}) paid per month will NOT cover interest")
             return -1
 
         payLoan(loans, amountPaid, totalInterest)
-        printLoanInfo(loans, amountPaid, totalInterest, month, numOfLoans)
+        # printLoanInfo(loans, amountPaid, totalInterest, month, numOfLoans)
 
-    print(
-          f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
-          f"* ALL LOANS HAVE BEEN PAID OFF in ~{month} Months! *\n"
-          f"********** Approximately {month / 12:.2f} years! **********\n"
-          f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
-    )
+    # print(
+    #       f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    #       f"* ALL LOANS HAVE BEEN PAID OFF in ~{month} Months! *\n"
+    #       f"********** Approximately {month / 12:.2f} years! **********\n"
+    #       f"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"
+    # )
     return month
 
 
@@ -39,14 +39,6 @@ def calculateInterest(loans, interestRates):
         # Assumed interest is added, then paid for later on in payLoan()
         totalInterest += interest_cost
     return totalInterest
-
-
-def findHighestInterestRateWithOutstandingPrinciple(loans, interestRates):
-    highestRateLoanKey = len(interestRates.keys())
-    for key in list(interestRates.keys()):
-        if interestRates[key] >= highestRateLoanKey and loans[key] > 0:
-            highestRateLoanKey = key
-    return highestRateLoanKey
 
 
 def payLoan(loans, amountPaid, totalInterest):
@@ -119,7 +111,6 @@ if __name__ == '__main__':
     myForgivenLoans = \
         {
             1: 10000,  # $20000 of STUDENT LOANS FORGIVEN
-            2: 10000,
             3: 10000,
             4: 10000,
             5: 10000 - 10000,
@@ -136,20 +127,23 @@ if __name__ == '__main__':
             6: 0.0499
         }
 
-    studentLoans(myNormalLoans, myInterestRates, 750)
-    # studentLoans(testLoans, testInterestRates, 318.20)
+    myPaymentPerMonth = 525
+    payments = studentLoans(myNormalLoans, myInterestRates, myPaymentPerMonth)
+    print(f"Paying ${myPaymentPerMonth} per Month based on given Loans + Interest Rates\n"
+          f"    It will take approximately {payments} monthly payments, or ~{payments/12:.2f} years")
 
-    from time import time
-    guess = 150
-    years = 10
-    t0 = time()
-    a = minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, years, accuracy=1, startingGuess=guess)
-    t1 = time()
-    b = minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, years, accuracy=0.1, startingGuess=guess)
-    t2 = time()
-    c = minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, years, accuracy=0.01, startingGuess=guess)
-    t3 = time()
-    print(f'mPPMBF $1.00 Accuracy starting at ${guess:.2f} takes {t1 - t0:.2f} seconds, Result -> ${a:.2f}')
-    print(f'mPPMBF $0.10 Accuracy starting at ${guess:.2f} takes {t2 - t1:.2f} seconds, Result -> ${b:.2f}')
-    print(f'mPPMBF $0.01 Accuracy starting at ${guess:.2f} takes {t3 - t2:.2f} seconds, Result -> ${c:.2f}')
+
+    # from time import time
+    # guess = 0
+    # years = 1.5
+    # t0 = time()
+    # a = minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, years, accuracy=1.0, startingGuess=guess)
+    # t1 = time()
+    # b = minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, years, accuracy=0.1, startingGuess=guess)
+    # t2 = time()
+    # c = minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, years, accuracy=0.01, startingGuess=guess)
+    # t3 = time()
+    # print(f'mPPMBF $1.00 Accuracy starting at ${guess:.2f} takes {t1 - t0:.2f} seconds, Result -> ${a:.2f}')
+    # print(f'mPPMBF $0.10 Accuracy starting at ${guess:.2f} takes {t2 - t1:.2f} seconds, Result -> ${b:.2f}')
+    # print(f'mPPMBF $0.01 Accuracy starting at ${guess:.2f} takes {t3 - t2:.2f} seconds, Result -> ${c:.2f}')
 
