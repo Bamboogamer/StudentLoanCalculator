@@ -36,7 +36,7 @@ def calculateInterest(loans, interestRates):
     totalInterest = 0
     for key in list(loans.keys()):
         interest_cost = (interestRates[key] / 12) * loans[key]
-        # Assumed interest is added
+        # Assumed interest is added, then paid for later on in payLoan()
         totalInterest += interest_cost
     return totalInterest
 
@@ -65,20 +65,19 @@ def payLoan(loans, amountPaid, totalInterest):
 
 
 def printLoanInfo(loans, amountPaid, totalInterest, month, totalNumOfLoans):
-    end_string = f"MONTH {month}\n" \
+    end_string = f"MONTH {month} ====================================\n" \
                  f"Total Amount Paid this Month: ${amountPaid:.2f}\n" \
                  f"Principle Paid this Month: ${amountPaid - totalInterest:.2f}\n" \
-                 f"Total Interest Paid this Month: ${totalInterest:.2f}\n" \
-                 f"Current Loans:\n" \
-                 f"===============================\n"
+                 f"Total Interest Paid this Month: ${totalInterest:.2f}\n\n" \
+                 f"Current Loans:\n"
 
     for loanNumber in range(1, totalNumOfLoans+1):
         if loans[loanNumber] <= 0:
-            end_string += f"Loan {loanNumber} Balance: [PAID OFF]"
+            end_string += f"Loan {loanNumber} Balance: [PAID OFF]\n"
         else:
-            end_string += f"Loan {loanNumber} Balance: ${loans[loanNumber]:.2f}"
+            end_string += f"Loan {loanNumber} Balance: ${loans[loanNumber]:.2f}\n"
 
-    print(end_string + f"\nEND OF MONTH {month}\n")
+    print(end_string + f"\nEND OF MONTH {month} =============================\n")
     return -1
 
 
@@ -137,7 +136,7 @@ if __name__ == '__main__':
             6: 0.0499
         }
 
-    # studentLoans(myNormalLoans, myInterestRates, 300000)
+    studentLoans(myNormalLoans, myInterestRates, 750)
     # studentLoans(testLoans, testInterestRates, 318.20)
 
     from time import time
