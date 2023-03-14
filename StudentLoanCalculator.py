@@ -100,17 +100,18 @@ if __name__ == '__main__':
 
     myNormalLoans = \
         {
-            1: 10000,
-            2: 10000,
-            3: 10000,
-            4: 10000,
-            5: 10000,
-            6: 10000
+            1: 5000,
+            2: 5000,
+            3: 5000,
+            4: 5000,
+            5: 5000,
+            6: 5000
         }
 
     myForgivenLoans = \
         {
             1: 10000,  # $20000 of STUDENT LOANS FORGIVEN
+            2: 10000,
             3: 10000,
             4: 10000,
             5: 10000 - 10000,
@@ -127,17 +128,17 @@ if __name__ == '__main__':
             6: 0.0499
         }
 
-    myPaymentPerMonth = 525
-    payments = studentLoans(myNormalLoans, myInterestRates, myPaymentPerMonth)
-    print(f"Paying ${myPaymentPerMonth} per Month based on given Loans + Interest Rates\n"
-          f"    It will take approximately {payments} monthly payments, or ~{payments/12:.2f} years")
+    # myPaymentPerMonth = 525
+    # payments = studentLoans(myNormalLoans, myInterestRates, myPaymentPerMonth)
+    # print(f"Paying ${myPaymentPerMonth} per Month based on given Loans + Interest Rates\n"
+    #       f"    It will take approximately {payments} monthly payments, or ~{payments/12:.2f} years")
 
 
-    # from time import time
-    # guess = 0
-    # years = 1.5
+    from time import time
+    guess = 100
+    years = 2
     # t0 = time()
-    # a = minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, years, accuracy=1.0, startingGuess=guess)
+    a = minimumPaymentPerMonthBruteForce(testLoans, testInterestRates, years, accuracy=1.0, startingGuess=guess)
     # t1 = time()
     # b = minimumPaymentPerMonthBruteForce(myNormalLoans, myInterestRates, years, accuracy=0.1, startingGuess=guess)
     # t2 = time()
